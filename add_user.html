@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Añadir Usuario</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Añadir Nuevo Usuario</h1>
+    </header>
+
+    <section>
+        <!-- formulario para añadir usuarios -->
+        <form action="add_user.php" method="POST" onsubmit="return validarFormulario()">
+            <label for="nombre">Nombre y Apellidos:</label>
+            <input type="text" id="nombre" name="nombre" required>
+
+            <label for="correo">Correo Electrónico:</label>
+            <input type="email" id="correo" name="correo" required>
+
+            <label for="edad">Edad:</label>
+            <input type="number" id="edad" name="edad" min="1" required>
+
+            <fieldset>
+                <legend>Plan</legend>
+                <select id="plan" name="plan" required>
+                    <option value="1">Básico (1 dispositivo) - 9,99€ /mes</option>
+                    <option value="2">Estándar (2 dispositivos) - 13,99€ /mes</option>
+                    <option value="3">Premium (4 dispositivos) - 17,99€ /mes</option>
+                </select>
+            </fieldset>
+            
+            <fieldset>
+                <legend>Paquetes Adicionales (puedes seleccionar varios):</legend>
+                <div>
+                    <input type="checkbox" id="paquete-1" name="paquetes[]" value="1">
+                    <label for="paquete-1">Deporte - 6,99€ /mes</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="paquete-2" name="paquetes[]" value="2">
+                    <label for="paquete-2">Cine - 7,99€ /mes</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="paquete-3" name="paquetes[]" value="3">
+                    <label for="paquete-3">Infantil - 4,99€ /mes</label>
+                </div>
+            </fieldset>
+
+            <label for="duracion">Duración de la Suscripción:</label>
+            <select id="duracion" name="duracion" required>
+                <option value="Mensual">Mensual</option>
+                <option value="Anual">Anual</option>
+            </select>
+
+            
+
+            <!-- para enviar el formulario -->
+            <button type="submit">Añadir Usuario</button>
+        </form>
+    </section>
+
+    <script> 
+        document.addEventListener("DOMContentLoaded", function () {
+    document.querySelector("form").addEventListener("submit", function (event) {
+        let edad = parseInt(document.getElementById("edad").value);
+        let plan = document.getElementById("plan").value;
+        let duracion = document.getElementById("duracion").value;
+        let paquetesSeleccionados = document.querySelectorAll("input[name='paquetes[]']:checked");
+        let paqueteDeporte = document.getElementById("paquete-1").checked;
+        let paqueteInfantil = document.getElementById("paquete-3").checked;
+
+        // la primera restriccion: los menores de 18a solo pueden contratar el infantil
+        if (edad < 18) {
+            if (paquetesSeleccionados.length > 1 || !paqueteInfantil) {
+                alert("Los usuarios menores de 18 años solo pueden contratar el Pack Infantil.");
+                event.preventDefault();
+                return false;
+            }
+        }
+
+        // la segunda restriccion: plan basico solo puede elegir un paquete
+        if (plan == "1" && paquetesSeleccionados.length > 1) {
+            alert("El Plan Básico solo permite seleccionar un paquete adicional.");
+            event.preventDefault();
+            return false;
+        }
+
+        // tercera restriccion: plan estandar solo puede elegir dos paquetes
+        if (plan == "2" && paquetesSeleccionados.length > 2) {
+            alert("El Plan Estándar solo permite seleccionar hasta dos paquetes adicionales.");
+            event.preventDefault();
+            return false;
+        }
+
+        // cuarta restriccion: pack deporte solo con sub anual
+        if (paqueteDeporte && duracion !== "Anual") {
+            alert("El Pack Deporte solo puede contratarse con una suscripción anual.");
+            event.preventDefault();
+            return false;
+        }
+    });
+});
+
+    </script>
+</html>
