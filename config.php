@@ -1,8 +1,8 @@
 <?php
-$host = '127.0.0.1'; 
+$host = 'localhost'; 
 $dbname = 'streamweb';
 $username = 'root';
-$password = 'Angeell.03'; 
+$password = 'curso'; 
 $port = '3306'; 
 
 try {
